@@ -11,14 +11,14 @@ using Web.Controllers.Base;
 
 namespace Web.Controllers
 {
-    [Authorize("Administrador")]
+    [Authorize("Administrator")]
+    [Route("api/users/[action]")]
     public class UserController : BaseController
     {
         private readonly IUserRep _userRep;
 
         public UserController(IUserRep userRep, IUnitOfWork unitOfWork)
             : base(unitOfWork)
-
         {
             _userRep = userRep;
         }
@@ -29,11 +29,13 @@ namespace Web.Controllers
             return Ok(_userRep.GetAll());
         }
 
-        [HttpGet("Get")]
+        [HttpGet]
         [Route("{id}")]
         public IActionResult Get(long id)
         {
-            return Ok(_userRep.GetById(id));
+            User user = _userRep.GetById(id);
+            user.CleanPassword();
+            return Ok(user);
         }
 
         [HttpPost]

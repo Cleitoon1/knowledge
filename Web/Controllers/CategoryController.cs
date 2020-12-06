@@ -1,4 +1,5 @@
-﻿using Data.Transactions;
+﻿using System.Threading.Tasks;
+using Data.Transactions;
 using Domain.Commands.Categories.AddCategory;
 using Domain.Commands.Categories.ListCategories;
 using Domain.Commands.Categories.RemoveCategory;
@@ -6,14 +7,14 @@ using Domain.Commands.Categories.UpdateCategory;
 using Domain.Interfaces.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.Controllers.Base;
 
 namespace Web.Controllers
 {
 
-    [Authorize("Administrador")]
+    [Authorize]
+    [Route("api/categories/[action]")]
     public class CategoryController : BaseController
     {
         private readonly IMediator _mediator;
@@ -27,9 +28,9 @@ namespace Web.Controllers
 
         [HttpGet]
         [Route("{parentCategoryId?}")]
-        public IActionResult All(int? parentCategoryId = null)
+        public async Task<IActionResult> All(int? parentCategoryId = null)
         {
-            return Ok(_mediator.Send(new ListCategoryRequest(parentCategoryId)));
+            return HandleResponse(await _mediator.Send(new ListCategoryRequest(parentCategoryId)));
         }
 
         [HttpGet]
@@ -39,25 +40,25 @@ namespace Web.Controllers
             return Ok(_categoryRep.GetTree(id));
         }
 
-        [HttpPost]
         [Authorize("Administrator")]
-        public IActionResult Create(AddCategoryRequest data)
+        [HttpPost]
+        public async Task<IActionResult> Create(AddCategoryRequest data)
         {
-            return Ok(_mediator.Send(data));
+            return HandleResponse(await _mediator.Send(data));
         }
 
-        [HttpPost]
         [Authorize("Administrator")]
-        public IActionResult Update(UpdateCategoryRequest data)
+        [HttpPost]
+        public async Task<IActionResult> Update(UpdateCategoryRequest data)
         {
-            return Ok(_mediator.Send(data));
+            return HandleResponse(await _mediator.Send(data));
         }
 
-        [HttpDelete]
         [Authorize("Administrator")]
-        public IActionResult Delete(RemoveCategoryRequest data)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            return Ok(_mediator.Send(data));
+            return HandleResponse(await _mediator.Send(new RemoveCategoryRequest(id)));
         }
     }
 }

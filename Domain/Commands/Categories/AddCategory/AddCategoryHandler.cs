@@ -31,6 +31,7 @@ namespace Domain.Commands.Categories.AddCategory
             }
 
             Category category = new Category(request.Name, request.ParentCategoryId);
+            category.Validate();
             AddNotifications(category);
 
             if (Invalid)

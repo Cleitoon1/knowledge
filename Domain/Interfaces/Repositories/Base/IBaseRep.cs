@@ -20,7 +20,7 @@ namespace Domain.Interfaces.Repositories.Base
         TEntity GetById(TId id, bool tracking = true);
         IEnumerable<TEntity> GetAll();
         IEnumerable<TEntity> GetAll(Func<TEntity, bool> predicate, bool tracking = true);
-        IQueryable<TEntity> GetBy(Expression<Func<TEntity, bool>> where, bool tracking = true, params Expression<Func<TEntity, object>>[] includeProperties);
+        IQueryable<TEntity> GetAllBy(Expression<Func<TEntity, bool>> where, bool tracking = true, params Expression<Func<TEntity, object>>[] includeProperties);
         IQueryable<TEntity> GetAndOrderBy<TKey>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> orderBy, bool asc = true, bool tracking = true, params Expression<Func<TEntity, object>>[] includeProperties);
         TEntity GetBy(Func<TEntity, bool> where, bool tracking = true, params Expression<Func<TEntity, object>>[] includeProperties);
         IQueryable<TEntity> GetAll(bool tracking = true, params Expression<Func<TEntity, object>>[] includeProperties);

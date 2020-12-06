@@ -1,4 +1,4 @@
-﻿using Shared.Extensions;
+﻿using Domain.Extensions;
 using Domain.Models.Base;
 using Flunt.Validations;
 using System;
@@ -9,7 +9,7 @@ namespace Domain.Models
     public class User : BaseEntity
     {
         public User(string name, string lastName, string mail, string password, string mobilePhone,
-            int profileId, DateTime? birthDate = null) : base()
+            long profileId, DateTime? birthDate = null) : base()
         {
             Name = name;
             LastName = lastName;
@@ -19,12 +19,12 @@ namespace Domain.Models
             BirthDate = birthDate;
             ProfileId = profileId;
             Validate();
-            if (!string.IsNullOrEmpty(Password) && !string.IsNullOrWhiteSpace(Password))
+            if (!string.IsNullOrEmpty(password) && !string.IsNullOrWhiteSpace(password))
                 Password = password.ConvertToMD5();
         }
 
         public User(string name, string lastName, string mail, string mobilePhone,
-            int profileId, DateTime? birthDate = null) : base()
+            long profileId, DateTime? birthDate = null) : base()
         {
             Name = name;
             LastName = lastName;
@@ -43,7 +43,7 @@ namespace Domain.Models
         public string Password { get; private set; }
         public string MobilePhone { get; private set; }
         public DateTime? BirthDate { get; private set; }
-        public int ProfileId { get; private set; }
+        public long ProfileId { get; private set; }
         public Profile Profile { get; private set; }
         public ICollection<Article> Articles { get; private set; }
 

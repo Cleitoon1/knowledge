@@ -5,6 +5,6 @@ namespace Domain.Interfaces.Repositories
 {
     public interface IUserRep : IBaseRep<User, long>
     {
-        User Login(string email, string password);
+        User Login(string mail, string password);
     }
 }

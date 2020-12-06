@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Web.Controllers.Base
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
-    public class BaseController : Controller
+    public abstract class BaseController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -20,7 +20,7 @@ namespace Web.Controllers.Base
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult ResponseAsync(Response response)
+        internal IActionResult HandleResponse(Response response)
         {
             if (!response.Notifications.Any())
             {
@@ -37,11 +37,14 @@ namespace Web.Controllers.Base
             }
             else
             {
-                return Ok(response);
+                if(response.Success)
+                    return Ok(response);
+                else
+                    return BadRequest(response);
             }
         }
 
-        public IActionResult ResponseException(Exception ex)
+        internal IActionResult HandleException(Exception ex)
         {
             return BadRequest(new { errors = ex.Message, exception = ex.ToString() });
         }

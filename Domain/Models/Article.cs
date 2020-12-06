@@ -7,7 +7,7 @@ namespace Domain.Models
 {
     public class Article : BaseEntity
     {
-        public Article(string title, string description, string imageUrl, byte[] content, int categoryId) : base()
+        public Article(string title, string description, string imageUrl, byte[] content, long categoryId) : base()
         {
             Title = title;
             Description = description;
@@ -17,7 +17,7 @@ namespace Domain.Models
             Validate();
         }
 
-        public Article(string title, string description, byte[] content, int categoryId) : base()
+        public Article(string title, string description, byte[] content, long categoryId) : base()
         {
             Title = title;
             Description = description;
@@ -30,7 +30,7 @@ namespace Domain.Models
         public string Description { get; private set; }
         public string ImageUrl { get; private set; }
         public byte[] Content { get; private set; }
-        public int CategoryId { get; private set; }
+        public long CategoryId { get; private set; }
         public Category Category { get; private set; }
 
         public override void Validate()

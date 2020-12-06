@@ -2,6 +2,7 @@
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Repositories.Base;
 using Domain.Models;
+using System.Linq;
 
 namespace Data.Repositories
 {
@@ -11,9 +12,9 @@ namespace Data.Repositories
         {
         }
 
-        public User Login(string email, string password)
+        public User Login(string mail, string password)
         {
-            throw new System.NotImplementedException();
+            return _context.Set<User>().Where(x => x.Mail == mail && x.Password == password).FirstOrDefault();
         }
     }
 }

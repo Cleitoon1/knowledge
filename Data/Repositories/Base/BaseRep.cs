@@ -12,7 +12,7 @@ namespace Data.Repositories.Base
         where TEntity : BaseEntity
         where TId : struct
     {
-        private readonly KnowledgeContext _context;
+        protected KnowledgeContext _context;
 
         public BaseRep(KnowledgeContext context)
         {
@@ -37,7 +37,7 @@ namespace Data.Repositories.Base
 
         public void Delete(TId id)
         {
-            _context.Set<TEntity>().Add(GetById(id));
+            _context.Set<TEntity>().Remove(GetById(id));
         }
 
         public void Delete(IEnumerable<TEntity> entities)
@@ -76,7 +76,7 @@ namespace Data.Repositories.Base
 
         public IQueryable<TEntity> GetAndOrderBy<TKey>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> orderBy, bool asc = true, bool tracking = true, params Expression<Func<TEntity, object>>[] includeProperties)
         {
-            return asc ? GetBy(where, tracking, includeProperties).OrderBy(orderBy) : GetBy(where, tracking, includeProperties).OrderByDescending(orderBy);
+            return asc ? GetAllBy(where, tracking, includeProperties).OrderBy(orderBy) : GetAllBy(where, tracking, includeProperties).OrderByDescending(orderBy);
         }
 
         public IQueryable<TEntity> GetAndOrderBy<TKey>(Expression<Func<TEntity, TKey>> orderBy, bool asc = true, bool tracking = true, params Expression<Func<TEntity, object>>[] includeProperties)
@@ -85,7 +85,7 @@ namespace Data.Repositories.Base
 
         }
 
-        public IQueryable<TEntity> GetBy(Expression<Func<TEntity, bool>> where, bool tracking = true, params Expression<Func<TEntity, object>>[] includeProperties)
+        public IQueryable<TEntity> GetAllBy(Expression<Func<TEntity, bool>> where, bool tracking = true, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             return GetAll(tracking, includeProperties).Where(where);
         }

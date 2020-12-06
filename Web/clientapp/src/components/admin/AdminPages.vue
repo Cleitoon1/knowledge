@@ -9,7 +9,6 @@
                     </b-tab>
                     <b-tab title="Categorias">
                         <CategoryAdmin />
-
                     </b-tab>
                     <b-tab title="Usuários">
                         <UserAdmin />

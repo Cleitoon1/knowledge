@@ -8,54 +8,94 @@ using Shared.Utils;
 using VueCliMiddleware;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Web.Security;
+using MediatR;
+using System.Reflection;
+using Domain;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using DI;
 
 namespace Web
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = Configuration.GetConnectionString("SQLDataBase");
-
-            services.Configure<SmtpConfig>(Configuration.GetSection(nameof(SmtpConfig)));
-
-            services.AddDbContext<KnowledgeContext>(options =>
+            var tokenConfigurations = Configuration.GetSection(nameof(TokenConfigurations));
+            services.AddSingleton<TokenConfigurations>(tokenConfigurations.Get<TokenConfigurations>());
+            services.AddSingleton<SmtpConfig>(Configuration.GetSection(nameof(SmtpConfig)).Get<SmtpConfig>());
+            services.AddAuthentication(x =>
             {
-                options.UseSqlServer(connectionString, x =>
-                {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x => {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenConfigurations["PrivateKey"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+            services.AddAuthorization(x => {
+
+                x.AddPolicy("Administrator", a => { a.RequireRole("Administrator"); });
+                x.AddPolicy("User", a => { a.RequireRole("User"); });
+            });
+
+            services.AddDbContext<KnowledgeContext>(options => {
+                options.UseSqlServer(connectionString, x => {
                     x.MigrationsAssembly("Data");
                     x.CommandTimeout((int)TimeSpan.FromMinutes(10).TotalSeconds);
                 });
                 // options.EnableSensitiveDataLogging(true);
             });
 
-            services.ConfigureMediatR();
-            services.ConfigureRepositories();
-            services.ConfigureSwagger();
-            services.ConfigureAuthentication();
-            services.ConfigureMVC();
+            services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly, typeof(Application).GetTypeInfo().Assembly);
+
+            services.AddControllers();
+            services.AddMvc()
+                .AddNewtonsoftJson(options => 
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
             services.AddHttpContextAccessor();
+            services.AddScoped<KnowledgeContext, KnowledgeContext>();
+            ModuleIOC.RegisterServices(services);
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Knowledge", Version = "v1" });
+            });
+
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp";
+                configuration.RootPath = "clientApp";
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Knowledge API - V1");
+            });
 
             app.UseCors(x => {
                 x.AllowAnyHeader();
@@ -65,22 +105,24 @@ namespace Web
 
             app.UseRouting();
             app.UseSpaStaticFiles();
+            app.UseCookiePolicy();
+            app.UseAuthentication();
             app.UseAuthorization();
+            app.UseResponseCaching();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}"
+                );
                 endpoints.MapControllers();
-            });
+            });            
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Knowledge API - V1");
-            });
-
-            app.UseSpa(spa =>
-            {
+            app.UseSpa(spa => {
+                spa.Options.StartupTimeout = new TimeSpan(days: 0, hours: 0, minutes: 1, seconds: 30);
                 if (env.IsDevelopment())
-                    spa.Options.SourcePath = "ClientApp";
+                    spa.Options.SourcePath = "clientApp";
                 else
                     spa.Options.SourcePath = "dist";
 

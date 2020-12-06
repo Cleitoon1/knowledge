@@ -16,5 +16,7 @@ namespace Domain.Models.Base
         public long? ModifiedBy { get; private set; }
         public DateTime ModifiedDate { get; private set; }
         public abstract void Validate();
+        public void SetCreatedBy(long? userId) => CreatedBy = userId;
+        public void SetModifiedBy(long? userId) => ModifiedBy = userId;
     }
 }

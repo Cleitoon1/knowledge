@@ -34,9 +34,15 @@ namespace Domain.Commands.Categories.RemoveCategory
                 return new Response(this);
             }
 
+            if(_categoryRep.Exists(x => x.ParentCategoryId == request.Id))
+            {
+                AddNotification("Category", "There is Parents with this Category");
+                return new Response(this);
+            }
+
             if(_articleRep.Exists(x => x.CategoryId == request.Id))
             {
-                AddNotification("Category", "There is no articles with this Category");
+                AddNotification("Category", "There is articles with this Category");
                 return new Response(this);
             }
 

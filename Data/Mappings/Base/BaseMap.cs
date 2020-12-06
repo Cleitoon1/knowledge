@@ -1,4 +1,5 @@
-﻿using Domain.Models.Base;
+﻿using System;
+using Domain.Models.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,8 +11,10 @@ namespace Data.Mappings.Base
         public void Configure(EntityTypeBuilder<TEntity> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.CreatedBy).ValueGeneratedOnAdd();
-            builder.Property(x => x.ModifiedDate).ValueGeneratedOnUpdate();
+            builder.Property(x => x.CreatedDate).HasDefaultValueSql("GETDATE()").ValueGeneratedOnAdd();
+            builder.Property(x => x.CreatedBy);
+            builder.Property(x => x.ModifiedDate).HasDefaultValueSql("GETDATE()").ValueGeneratedOnAddOrUpdate();
+            builder.Property(x => x.ModifiedBy);
             ConfigureOtherProperties(builder);
         }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="user-admin">
     <b-form>
-      <input type="hidden" v-model="user.id">
+      <input id="user-id" type="hidden" v-model="user.id">
       <b-row>
         <b-col md="6" sm="12">
           <b-form-group label="Nome:" label-for="user-name">
@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     loadUsers() {
-      const url = `${baseApiUrl}/users`
+      const url = `${baseApiUrl}/api/users/all`
       axios.get(url).then(res => this.users = res.data)
     },
     reset() {
@@ -90,9 +90,8 @@ export default {
       this.loadUsers();
     },
     save() {
-      const method = this.user.id ? 'put' : 'post'
-      const id = this.user.id ? `/${this.user.id}` : ''
-      axios[method](`${baseApiUrl}/users/${id}`, this.user)
+      const url = `${baseApiUrl}/api/${this.category.id ? `categories/update` : `categories/create`}`
+      axios.post(url, this.user)
         .then(() => {
           this.$toasted.global.defaultSuccess()
           this.reset()
@@ -100,7 +99,7 @@ export default {
     },
     remove() {
        const id = this.user.id ? `/${this.user.id}` : ''
-        axios.delete(`${baseApiUrl}/users/${id}`, this.user)
+        axios.delete(`${baseApiUrl}/api/users/delete/${id}`, this.user)
         .then(() => {
           this.$toasted.global.defaultSuccess()
           this.reset()

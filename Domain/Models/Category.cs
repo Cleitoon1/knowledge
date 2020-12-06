@@ -28,7 +28,7 @@ namespace Domain.Models
         {
             string path = Name;
             if (ParentCategory != null)
-                path += $"{Name} >> { ParentCategory.GetPath() }";
+                path = $"{ParentCategory.GetPath()} >> {Name}";
             return path;
         }
 

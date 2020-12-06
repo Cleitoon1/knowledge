@@ -1,4 +1,5 @@
-﻿using Data.Repositories.Base;
+﻿using System.Linq;
+using Data.Repositories.Base;
 using Domain.Interfaces.Repositories;
 using Domain.Models;
 
@@ -8,6 +9,11 @@ namespace Data.Repositories
     {
         public ProfileRep(KnowledgeContext context) : base(context)
         {
+        }
+
+        public Profile GetByName(string name)
+        {
+            return GetBy(x => x.Name == name);
         }
     }
 }
