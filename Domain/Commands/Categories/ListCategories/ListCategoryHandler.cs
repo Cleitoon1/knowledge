@@ -26,8 +26,8 @@ namespace Domain.Commands.Categories.ListCategories
                 return new Response(this);
             }
 
-            IEnumerable<long> lstIds = (request.ParentCategoryId.HasValue ?
-                _categoryRep.GetAll(x => x.ParentCategoryId == request.ParentCategoryId.Value, tracking: false) 
+            IEnumerable<long> lstIds = (request.ParentId.HasValue ?
+                _categoryRep.GetAll(x => x.ParentId == request.ParentId.Value, tracking: false) 
                 : _categoryRep.GetAll(false)).Select(x => x.Id).ToList();
             Response response = new Response(this, lstIds.Select(x => new ListArticleResponse(_categoryRep.GetPath(x))));
             return await Task.FromResult(response);

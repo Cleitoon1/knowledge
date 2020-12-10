@@ -24,13 +24,13 @@ namespace Domain.Commands.Categories.AddCategory
                 return new Response(this);
             }
             
-            if(request.ParentCategoryId.HasValue && !_categoryRep.Exists(x => x.Id == request.ParentCategoryId.Value))
+            if(request.ParentId.HasValue && !_categoryRep.Exists(x => x.Id == request.ParentId.Value))
             {
-                AddNotification("Request", "There is no category with this ParentCategoryId");
+                AddNotification("Request", "There is no category with this ParentId");
                 return new Response(this);
             }
 
-            Category category = new Category(request.Name, request.ParentCategoryId);
+            Category category = new Category(request.Name, request.ParentId);
             category.Validate();
             AddNotifications(category);
 

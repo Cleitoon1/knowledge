@@ -20,7 +20,7 @@ namespace Domain.Commands.Categories.TreeCategories
 
         public Task<Response> Handle(TreeCategoriesRequest request, CancellationToken cancellationToken)
         {
-            IEnumerable<TreeCategoriesResponse> data = _categoryRep.GetTree(request.parentCategoryId)
+            IEnumerable<TreeCategoriesResponse> data = _categoryRep.GetTree(request.parentId)
                 .Select(x => new TreeCategoriesResponse(x)).ToList();
             Response response = new Response(this, data);
             return Task.FromResult(response);

@@ -28,10 +28,10 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        [Route("{parentCategoryId?}")]
-        public async Task<IActionResult> All(int? parentCategoryId = null)
+        [Route("{parentId?}")]
+        public async Task<IActionResult> All(int? parentId = null)
         {
-            return HandleResponse(await _mediator.Send(new ListCategoryRequest(parentCategoryId)));
+            return HandleResponse(await _mediator.Send(new ListCategoryRequest(parentId)));
         }
 
         [HttpGet]

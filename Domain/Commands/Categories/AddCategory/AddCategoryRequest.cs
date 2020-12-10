@@ -4,13 +4,13 @@ namespace Domain.Commands.Categories.AddCategory
 {
     public class AddCategoryRequest : IRequest<Response>
     {
-        public AddCategoryRequest(string name, long? parentCategoryId)
+        public AddCategoryRequest(string name, long? parentId)
         {
             Name = name;
-            ParentCategoryId = parentCategoryId;
+            ParentId = parentId;
         }
 
         public string Name { get; set; }
-        public long? ParentCategoryId { get; set; }
+        public long? ParentId { get; set; }
     }
 }

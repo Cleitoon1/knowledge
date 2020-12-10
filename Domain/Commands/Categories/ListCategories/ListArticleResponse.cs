@@ -10,15 +10,15 @@ namespace Domain.Commands.Categories.ListCategories
         {
             Id = category.Id;
             Name = category.Name;
-            ParentCategoryId = category.ParentCategoryId;
+            ParentId = category.ParentId;
             Path = category.GetPath();
             CreatedDate = category.CreatedDate;
             ModifiedDate = category.ModifiedDate;
         }
-        public ListArticleResponse(string name, long? parentCategoryId, string path, DateTime createdDate, DateTime modifiedDate)
+        public ListArticleResponse(string name, long? parentId, string path, DateTime createdDate, DateTime modifiedDate)
         {
             Name = name;
-            ParentCategoryId = parentCategoryId;
+            ParentId = parentId;
             Path = path;
             CreatedDate = createdDate;
             ModifiedDate = modifiedDate;
@@ -26,7 +26,7 @@ namespace Domain.Commands.Categories.ListCategories
 
         public long Id { get; set; }
         public string Name { get; set; }
-        public long? ParentCategoryId { get; set; }
+        public long? ParentId { get; set; }
         public string Path { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }

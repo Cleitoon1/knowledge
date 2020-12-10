@@ -7,40 +7,40 @@ namespace Domain.Models
 {
     public class Category : BaseEntity
     {
-        public Category(string name, long? parentCategoryId = null) : base()
+        public Category(string name, long? parentId = null) : base()
         {
             Name = name;
-            ParentCategoryId = parentCategoryId;
+            ParentId = parentId;
         }
 
         public string Name { get; private set; }
-        public long? ParentCategoryId { get; private set; }
-        public Category ParentCategory { get; private set; }
+        public long? ParentId { get; private set; }
+        public Category Parent { get; private set; }
         public ICollection<Article> Articles { get; private set; }
-        public ICollection<Category> Parents { get; private set; }
+        public ICollection<Category> Childrens { get; private set; }
         public void SetParent(Category category)
         {
-            ParentCategoryId = category.Id;
-            ParentCategory = category;
+            ParentId = category.Id;
+            Parent = category;
         }
 
         public void SetParents(IList<Category> childrens)
         {
-            Parents = childrens;
+            Childrens = childrens;
         }
 
         public void AddChildren(Category category)
         {
-            if(Parents == null)
-                Parents = new List<Category>();
-            Parents.Add(category);
+            if(Childrens == null)
+                Childrens = new List<Category>();
+            Childrens.Add(category);
         }
 
         public string GetPath()
         {
             string path = Name;
-            if (ParentCategory != null)
-                path = $"{ParentCategory.GetPath()} >> {Name}";
+            if (Parent != null)
+                path = $"{Parent.GetPath()} >> {Name}";
             return path;
         }
 
@@ -50,10 +50,10 @@ namespace Domain.Models
                 .HasMaxLengthIfNotNullOrEmpty(Name, 50, "Name", "Name must not null, empty or exceed 50 chars"));
         }
 
-        public void UpdateArticle(string name, long? parentCategoryId)
+        public void UpdateArticle(string name, long? parentId)
         {
             Name = name;
-            ParentCategoryId = parentCategoryId;
+            ParentId = parentId;
         }
     }
 }

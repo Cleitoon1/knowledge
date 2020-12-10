@@ -4,11 +4,11 @@ namespace Domain.Commands.Categories.ListCategories
 {
     public class ListCategoryRequest : IRequest<Response>
     {
-        public int? ParentCategoryId { get; set; }
+        public int? ParentId { get; set; }
 
-        public ListCategoryRequest(int? parentCategoryId)
+        public ListCategoryRequest(int? parentId)
         {
-            ParentCategoryId = parentCategoryId;
+            ParentId = parentId;
         }
 
         public ListCategoryRequest()

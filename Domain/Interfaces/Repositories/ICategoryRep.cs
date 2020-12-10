@@ -7,7 +7,7 @@ namespace Domain.Interfaces.Repositories
     public interface ICategoryRep : IBaseRep<Category, long>
     {
         Category GetPath(long id);
-        IEnumerable<Category> GetChildrens(long parentCategoryId);
-        IEnumerable<Category> GetTree(long? parentCategoryId = null);
+        IEnumerable<Category> GetChildrens(long parentId);
+        IEnumerable<Category> GetTree(long? parentId = null);
     }
 }

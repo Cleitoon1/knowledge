@@ -24,7 +24,7 @@ namespace Domain.Commands.Categories.UpdateCategory
                 return new Response(this);
             }
 
-            if (request.ParentCategoryId.HasValue && !_categoryRep.Exists(x => x.Id == request.ParentCategoryId.Value))
+            if (request.ParentId.HasValue && !_categoryRep.Exists(x => x.Id == request.ParentId.Value))
             {
                 AddNotification("Category", "There is no category with this ParentCategoryId");
                 return new Response(this);
@@ -37,14 +37,14 @@ namespace Domain.Commands.Categories.UpdateCategory
                 return new Response(this);
             }
 
-            category.UpdateArticle(request.Name, request.ParentCategoryId);
+            category.UpdateArticle(request.Name, request.ParentId);
             AddNotifications(category);
 
             if (Invalid)
                 return new Response(this);
 
             category = _categoryRep.Update(category);
-            var result = new { category.Id, category.Name, category.ParentCategoryId };
+            var result = new { category.Id, category.Name, category.ParentId };
             Response response = new Response(this, result);
             return await Task.FromResult(response);
         }

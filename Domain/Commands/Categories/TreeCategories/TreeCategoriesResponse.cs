@@ -11,15 +11,15 @@ namespace Domain.Commands.Categories.TreeCategories
         {
             Id = category.Id;
             Name = category.Name;
-            ParentCategoryId = category.ParentCategoryId;
+            ParentId = category.ParentId;
             CreatedDate = category.CreatedDate;
             ModifiedDate = category.ModifiedDate;
-            Children = (category.Parents ?? new List<Category>())
+            Children = (category.Childrens ?? new List<Category>())
                 .Select(x => new TreeCategoriesResponse(x)).ToList();
         }
         public long Id { get; set; }
         public string Name { get; set; }
-        public long? ParentCategoryId { get; set; }
+        public long? ParentId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
         public IEnumerable<TreeCategoriesResponse> Children { get; set; } = new List<TreeCategoriesResponse>();

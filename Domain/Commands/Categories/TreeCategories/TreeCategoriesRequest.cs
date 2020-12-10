@@ -5,6 +5,6 @@ namespace Domain.Commands.Categories.TreeCategories
 {
     public class TreeCategoriesRequest : IRequest<Response>
     {
-        public int? parentCategoryId { get; set; }
+        public int? parentId { get; set; }
     }
 }

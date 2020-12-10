@@ -6,9 +6,9 @@
         <b-form-input id="category-name" type="text" v-model="category.name" required 
           placeholder="Informe o Nome" :readonly="mode === 'remove'" />
       </b-form-group>
-      <b-form-group label="Categoria Pai:" label-for="category-parentCategoryId">
-        <b-form-select v-if="mode === 'save'" v-model="category.parentCategoryId" :options="categories" />
-        <b-form-input v-else id="category-parentCategoryId" type="text" v-model="category.path" readonly />
+      <b-form-group label="Categoria Pai:" label-for="category-parentId">
+        <b-form-select v-if="mode === 'save'" v-model="category.parentId" :options="categories" />
+        <b-form-input v-else id="category-parentId" type="text" v-model="category.path" readonly />
       </b-form-group>
       <b-button variant="primary" v-if="mode === 'save'" @click="save">Salvar</b-button>
       <b-button variant="danger" v-if="mode === 'remove'" @click="remove">Excluir</b-button>
@@ -77,7 +77,7 @@ export default {
     },
     loadCategory(category, mode = 'save'){
       this.mode = mode
-      this.category = { id: category.id, name: category.name, parentCategoryId : category.parentCategoryId }
+      this.category = { id: category.id, name: category.name, parentId : category.parentId }
     }
   },
   mounted(){

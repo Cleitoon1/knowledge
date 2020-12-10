@@ -13,12 +13,12 @@ namespace Data.Repositories
         {
         }
 
-        public IEnumerable<Category> GetTree(long? parentCategoryId = null)
+        public IEnumerable<Category> GetTree(long? parentId = null)
         {
             IQueryable<Category> query = _context.Set<Category>().AsNoTracking();
-            query = parentCategoryId.HasValue ? 
-                query.Where(x => x.ParentCategoryId == parentCategoryId.Value) :
-                query.Where(x => x.ParentCategoryId == null);
+            query = parentId.HasValue ? 
+                query.Where(x => x.ParentId == parentId.Value) :
+                query.Where(x => x.ParentId == null);
             return query.ToList().Select(x => ToTree(x)).ToList();            
         }
 
@@ -32,14 +32,14 @@ namespace Data.Repositories
 
         public Category GetPath(long id)
         {
-            Category category = GetById(id, false, x => x.Parents);
-            if (category.ParentCategoryId.HasValue)
-                category.SetParent(GetPath(category.ParentCategoryId.Value));            
+            Category category = GetById(id, false, x => x.Childrens);
+            if (category.ParentId.HasValue)
+                category.SetParent(GetPath(category.ParentId.Value));            
             return category;
         }
 
-        public IEnumerable<Category> GetChildrens(long parentCategoryId)
-            => _context.Set<Category>().Where(x => x.ParentCategoryId == parentCategoryId).ToList();
+        public IEnumerable<Category> GetChildrens(long parentId)
+            => _context.Set<Category>().Where(x => x.ParentId == parentId).ToList();
         
     }
 }

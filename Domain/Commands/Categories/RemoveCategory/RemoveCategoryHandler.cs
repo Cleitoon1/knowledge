@@ -34,7 +34,7 @@ namespace Domain.Commands.Categories.RemoveCategory
                 return new Response(this);
             }
 
-            if(_categoryRep.Exists(x => x.ParentCategoryId == request.Id))
+            if(_categoryRep.Exists(x => x.ParentId == request.Id))
             {
                 AddNotification("Category", "There is Parents with this Category");
                 return new Response(this);
