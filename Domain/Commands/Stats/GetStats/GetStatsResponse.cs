@@ -1,12 +1,12 @@
 namespace Domain.Commands.Stats.GetStats {
     public class GetStatsResponse {
-        public GetStatsResponse (int categoriesQuantity, int articlesQuantity, int usersQuantity) {
-            this.CategoriesQuantity = categoriesQuantity;
-            this.ArticlesQuantity = articlesQuantity;
-            this.UsersQuantity = usersQuantity;
+        public GetStatsResponse (int categories, int articles, int users) {
+            this.Categories = categories;
+            this.Articles = articles;
+            this.Users = users;
         }
-        public int CategoriesQuantity { get; set; }
-        public int ArticlesQuantity { get; set; }
-        public int UsersQuantity { get; set; }
+        public int Categories { get; set; }
+        public int Articles { get; set; }
+        public int Users { get; set; }
     }
 }

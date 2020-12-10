@@ -10,7 +10,15 @@ namespace Domain.Models.Base
 
         }
 
+
+
         public long Id { get; private set; }
+
+        protected BaseEntity(long id)
+        {
+            Id = id;
+        }
+
         public long? CreatedBy { get; private set; }
         public DateTime CreatedDate { get; private set; }
         public long? ModifiedBy { get; private set; }

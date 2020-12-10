@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.Controllers.Base;
+using Web.ViewModels;
 
 namespace Web.Controllers
 {
@@ -39,38 +40,39 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(User data)
+        public IActionResult Create(UserVM model)
         {
-            data.Validate();
+            User data = new User(model.Name, model.LastName, model.Mail, model.Password, model.MobilePhone,
+             model.ProfileId, model.BirthDate);
             if (data.Valid)
             {
                 _userRep.Create(data);
                 data.CleanPassword();
-                return Ok(data);
+                return HandleResponse(new Response(data));
             }
             else
                 return BadRequest(new Response(data));
         }
 
         [HttpPost]
-        public IActionResult Update(User data)
+        public IActionResult Update(UserVM model)
         {
-            data.Validate();
+            User data = new User(model.Id, model.Name, model.LastName, model.Mail, model.Password,
+             model.MobilePhone, model.ProfileId, model.BirthDate);
             if (data.Valid)
             {
-                _userRep.Create(data);
-                data.CleanPassword();
-                return Ok();
+                _userRep.Update(data);
+                return HandleResponse(new Response(data));
             }
             else
                 return BadRequest(new Response(data));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
             _userRep.Delete(id);
-            return Ok();
+            return HandleResponse(new Response(true, null));
         }
     }
 }

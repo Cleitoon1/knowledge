@@ -3,6 +3,7 @@ using Data.Transactions;
 using Domain.Commands.Categories.AddCategory;
 using Domain.Commands.Categories.ListCategories;
 using Domain.Commands.Categories.RemoveCategory;
+using Domain.Commands.Categories.TreeCategories;
 using Domain.Commands.Categories.UpdateCategory;
 using Domain.Interfaces.Repositories;
 using MediatR;
@@ -34,10 +35,16 @@ namespace Web.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetTree()
+        {
+            return Ok(await _mediator.Send(new TreeCategoriesRequest()));
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public IActionResult Get(long id)
         {
-            return Ok(_categoryRep.GetTree(id));
+            return Ok(_categoryRep.GetPath(id));
         }
 
         [Authorize("Administrator")]

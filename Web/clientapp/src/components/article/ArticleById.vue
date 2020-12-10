@@ -8,8 +8,6 @@
 <script>
 import 'highlightjs/styles/dracula.css'
 import hlsj from 'highlightjs/highlight.pack'
-import { baseApiUrl } from '@/global'
-import axios from 'axios'
 import PageTitle from '../templates/PageTitle'
 export default {
     name: 'ArticleById',
@@ -20,8 +18,8 @@ export default {
         }
     },
     mounted() {
-        const url = `${baseApiUrl}/articles/${this.$route.params.id}`
-        axios(url).then(res => this.article = res.data)
+        this.$http(`/articles/all?categoryId=${this.$route.params.id ? this.$route.params.id : ''}`)
+            .then(res => this.article = res.data.data)
     },
     updated() {
         document.querySelectorAll('.article-content pre.ql-syntax').forEach(e => {

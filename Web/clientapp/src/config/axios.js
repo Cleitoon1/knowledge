@@ -1,4 +1,6 @@
 import axios from 'axios'
+import Vue from 'vue'
+import { baseApiUrl } from '@/global'
 
 const sucess = res => res
 const error = err => {
@@ -10,3 +12,5 @@ const error = err => {
 }
 
 axios.interceptors.response.use(sucess, error)
+axios.defaults.baseURL = baseApiUrl;
+Vue.prototype.$http = axios;

@@ -10,16 +10,27 @@
           </b-form-group>
         </b-col>
         <b-col md="6" sm="12">
-          <b-form-group label="E-mail:" label-for="user-email">
-            <b-form-input id="user-email" type="text" v-model="user.email" required 
-              placeholder="Informe o E-mail" :readonly="mode === 'remove'" />
+          <b-form-group label="Ultimo Nome:" label-for="user-lastName">
+            <b-form-input id="user-lastName" type="text" v-model="user.lastName" required 
+              placeholder="Informe o Ultimo Nome" :readonly="mode === 'remove'" />
           </b-form-group>
         </b-col>
       </b-row>
-    <b-form-checkbox id="user-admin" v-show="mode === 'save'" v-model="user.admin"
-      class="mt-3 mb-3" :readonly="mode === 'remove'">
-      Administrador?
-    </b-form-checkbox>
+      <b-row>
+        <b-col md="6" sm="12">
+          <b-form-group label="E-mail:" label-for="user-mail">
+            <b-form-input id="user-mail" type="text" v-model="user.mail" required 
+              placeholder="Informe o E-mail" :readonly="mode === 'remove'" />
+          </b-form-group>
+        </b-col>
+        <b-col md="6" sm="12">
+          <b-form-group label="Perfil:" label-for="user-profileId">
+            <b-form-select v-if="mode === 'save'" v-model="user.profileId" :options="profiles" />
+            <b-form-input v-else id="user-profileId" type="text" v-model="user.profileName" readonly />
+          </b-form-group>
+        </b-col>
+      </b-row>
+    
       <b-row v-show="mode === 'save'">
         <b-col md="6" sm="12">
           <b-form-group label="Senha:" label-for="user-password">
@@ -57,8 +68,7 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { baseApiUrl, showError } from '@/global'
+import { showError } from '@/global'
 
 export default {  
   name: 'UserAdmin',
@@ -69,20 +79,31 @@ export default {
 
         },
         users: [],
+        profiles: [],
         fields: [
           {key: 'id', label: 'Código', sortable: true},
           {key: 'name', label: 'Nome', sortable: true},
-          {key: 'email', label: 'E-mail', sortable: true},
-          {key: 'admin', label: 'Administrador', sortable: true,
-            formatter: value => value ? 'Sim' : 'Não'},
+          {key: 'mail', label: 'E-mail', sortable: true},
+          {key: 'profileName', label: 'Perfil', sortable: true },
           {key: 'actions', label: 'Ações'}
         ]
       }
   },
   methods: {
+    async loadProfiles() {
+      await this.$http.get(`/profiles/all`).then(res => {
+          this.profiles = res.data.map(profile => {
+            return { ...profile, value: profile.id, text: profile.name }
+          })
+      })
+    },
     loadUsers() {
-      const url = `${baseApiUrl}/api/users/all`
-      axios.get(url).then(res => this.users = res.data)
+      this.$http.get(`/users/all`).then(res => {
+        this.users = res.data.map(user => {
+          const profile = this.profiles.find(e => e.id === user.profileId);
+          return  { ...user, password: '', profileName: (profile ? profile.name : '') }
+        })
+      })
     },
     reset() {
       this.mode = 'save'
@@ -90,16 +111,15 @@ export default {
       this.loadUsers();
     },
     save() {
-      const url = `${baseApiUrl}/api/${this.category.id ? `categories/update` : `categories/create`}`
-      axios.post(url, this.user)
+      this.$http.post(`/users/${this.user.id ? `update` : `create`}`, this.user)
         .then(() => {
           this.$toasted.global.defaultSuccess()
           this.reset()
         }).catch(showError)
     },
     remove() {
-       const id = this.user.id ? `/${this.user.id}` : ''
-        axios.delete(`${baseApiUrl}/api/users/delete/${id}`, this.user)
+       const id = this.user.id ? `${this.user.id}` : ''
+        this.$http.delete(`/users/delete/${id}`, this.user)
         .then(() => {
           this.$toasted.global.defaultSuccess()
           this.reset()
@@ -111,6 +131,7 @@ export default {
     }
   },
   mounted(){
+    this.loadProfiles();
     this.loadUsers();    
   }
 }

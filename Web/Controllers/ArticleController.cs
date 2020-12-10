@@ -27,7 +27,7 @@ namespace Web.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> All(ListArticleRequest data)
+        public async Task<IActionResult> All([FromHeader] ListArticleRequest data)
         {
             return HandleResponse(await _mediator.Send(data));
         }

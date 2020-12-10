@@ -28,6 +28,9 @@ namespace Domain.Commands.Articles.ListArticles
 
             IEnumerable<Article> data = (request.CategoryId.HasValue ?
                 _articleRep.GetAll(x => x.CategoryId == request.CategoryId.Value, tracking: false) :_articleRep.GetAll()).ToList();
+            if(request.Page.HasValue && request.Quantity.HasValue)
+                data = data.Skip(request.Page.Value * request.Quantity.Value - request.Quantity.Value)
+                    .Take(request.Quantity.Value).ToList();
             Response response = new Response(this, data);
             return await Task.FromResult(response);
         }

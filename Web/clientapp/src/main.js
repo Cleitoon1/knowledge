@@ -10,6 +10,7 @@ import './config/mq'
 
 import store from './config/store'
 import router from './config/router'
+
 Vue.config.productionTip = false
 
 new Vue({

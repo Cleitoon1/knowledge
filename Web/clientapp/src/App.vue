@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="{'hide-menu' : isMenuVisible || !user}">
+  <div id="app" :class="{'hide-menu' : !isMenuVisible || !user}">
     <Header title="Base de conhecimento" 
         :hideToggle="!user" 
         :hideUserDropdown="!user" />
@@ -11,8 +11,7 @@
 </template>
 
 <script>
-// import axios from 'axios';
-import { userKey} from '@/global'
+import { userKey } from '@/global'
 import { mapState } from 'vuex'
 import Header from "@/components/templates/Header"
 import Menu from "@/components/templates/Menu"

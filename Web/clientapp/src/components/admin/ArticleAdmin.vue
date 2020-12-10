@@ -44,8 +44,7 @@
 
 <script>
 import { VueEditor } from 'vue2-editor'
-import axios from 'axios'
-import { baseApiUrl, showError } from '@/global'
+import { showError } from '@/global'
 
 export default {  
   name: 'ArticleAdmin',
@@ -74,8 +73,7 @@ export default {
   },
   methods: {
     loadArticles() {
-      const url = `${baseApiUrl}/api/articles/all?page=${this.page}`
-      axios.get(url).then(res => {
+      this.$http.get(`/articles/all?page=${this.page}`).then(res => {
          this.articles = res.data.data
          this.data = res.data.count
          this.limit = res.data.limit
@@ -87,8 +85,7 @@ export default {
       this.loadArticles();
     },
     save() {
-      const url = `${baseApiUrl}/api/${this.category.id ? `categories/update` : `categories/create`}`
-      axios.post(url, this.article)
+      this.$http.post(`/articles/${this.article.id ? `update` : `create`}`, this.article)
         .then(() => {
           this.$toasted.global.defaultSuccess()
           this.reset()
@@ -96,7 +93,7 @@ export default {
     },
     remove() {
        const id = this.article.id ? `/${this.article.id}` : ''
-        axios.delete(`${baseApiUrl}/api/articles/delete/${id}`, this.article)
+        this.$http.delete(`/articles/delete/${id}`)
         .then(() => {
           this.$toasted.global.defaultSuccess()
           this.reset()
@@ -104,21 +101,19 @@ export default {
     },
     loadArticle(article, mode = 'save'){
       this.mode = mode
-      axios.get(`${baseApiUrl}/api/articles/get/${article.id}`)
-        .then(res => this.article = res.data)
+      this.$http.get(`/articles/get/${article.id}`)
+        .then(res => this.article = res.data.data)
     },
     loadCategories() {
-      const url = `${baseApiUrl}/api/categories/all`
-      axios.get(url).then(res => {
-        this.categories = res.data.map(category => {
+      this.$http.get(`/categories/all`).then(res => {
+        this.categories = res.data.data.map(category => {
           return { value: category.id, text: category.path }
         })
       })
     },
     loadUsers() {
-      const url = `${baseApiUrl}/api/users/all`
-      axios.get(url).then(res => {
-        this.categories = res.data.map(user => {
+      this.$http.get(`/users/all`).then(res => {
+        this.users = res.data.map(user => {
           return { value: user.id, text: user.name }
         })
       })

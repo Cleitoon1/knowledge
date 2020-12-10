@@ -18,6 +18,14 @@ namespace Domain.Commands
             this.Notifications = notifiable.Notifications;
         }
 
+        public Response(bool success, object data, 
+            IEnumerable<Notification> notifications = null)
+        {
+            this.Success = success;
+            this.Data = data;
+            this.Notifications = notifications ?? new List<Notification>();
+        }
+
         public IEnumerable<Notification> Notifications { get; }
         public bool Success { get; private set; }
         public object Data { get; private set; }

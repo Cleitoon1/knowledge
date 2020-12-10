@@ -24,6 +24,18 @@ namespace Domain.Models
             ParentCategory = category;
         }
 
+        public void SetParents(IList<Category> childrens)
+        {
+            Parents = childrens;
+        }
+
+        public void AddChildren(Category category)
+        {
+            if(Parents == null)
+                Parents = new List<Category>();
+            Parents.Add(category);
+        }
+
         public string GetPath()
         {
             string path = Name;

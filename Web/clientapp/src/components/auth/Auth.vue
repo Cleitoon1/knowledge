@@ -25,8 +25,7 @@
 </template>
 
 <script>
-import { baseApiUrl, showError, userKey } from '@/global'
-import axios from 'axios'
+import { showError, userKey } from '@/global'
 
 export default {
     name: 'Auth',
@@ -38,7 +37,7 @@ export default {
     },
     methods: {
         signin() {
-            axios.post(`${baseApiUrl}/api/auth/signin`, {mail: this.user.mail, password: this.user.password})
+            this.$http.post(`/auth/signin`, { mail: this.user.mail, password: this.user.password })
                 .then(res => {
                     this.$store.commit('setUser', res.data)
                     localStorage.setItem(userKey, JSON.stringify(res.data))
@@ -47,7 +46,7 @@ export default {
                 .catch(showError)
         },
         signup() {
-            axios.post(`${baseApiUrl}/api/auth/signup`, this.user)
+            this.$http.post(`/auth/signup`, this.user)
                 .then(() => {
                     this.$toasted.global.defaultSuccess()
                     this.user = {}

@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-      <span>Copyright <strong>Cleiton Alves</strong>2019</span>
+      <span>Copyright <strong>Cleiton Alves</strong> 2019</span>
   </footer>
 </template>
 

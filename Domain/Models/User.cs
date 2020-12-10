@@ -8,6 +8,10 @@ namespace Domain.Models
 {
     public class User : BaseEntity
     {
+        public User()
+        {
+            
+        }
         public User(string name, string lastName, string mail, string password, string mobilePhone,
             long profileId, DateTime? birthDate = null) : base()
         {
@@ -34,6 +38,21 @@ namespace Domain.Models
             BirthDate = birthDate;
             ProfileId = profileId;
             Validate();
+        }
+
+        public User(long id, string name, string lastName, string mail, string password, string mobilePhone,
+            long profileId, DateTime? birthDate = null) : base(id)
+        {
+            Name = name;
+            LastName = lastName;
+            FullName = $"{Name} {LastName}";
+            Mail = mail;
+            MobilePhone = mobilePhone;
+            BirthDate = birthDate;
+            ProfileId = profileId;
+            Validate();
+            if (!string.IsNullOrEmpty(password) && !string.IsNullOrWhiteSpace(password))
+                Password = password.ConvertToMD5();
         }
 
         public string Name { get; private set; }

@@ -12,8 +12,6 @@
 <script>
 import PageTitle from '../templates/PageTitle'
 import Stat from './Stat'
-import axios from 'axios'
-import { baseApiUrl } from '@/global'
 
 export default {
     name: 'Home',
@@ -25,7 +23,7 @@ export default {
     },
     methods: {
         getStats() {
-            axios.get(`${baseApiUrl}/api/stats/getstats`).then(res => this.stat = res.data)
+            this.$http.get(`/stats/getstats`).then(res => this.stat = res.data)
         }
     },
     mounted() {

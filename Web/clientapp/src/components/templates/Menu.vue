@@ -5,16 +5,13 @@
             <input type="text" placeholder="Digite para filtrar..."
                 v-model="treeFilter" class="filter-field">
         </div>
-        <Tree :data="treeData" :options="treeOptions"
-            :filter="treeFilter" ref="tree" />
+        <tree :data="treeData" :options="treeOptions" :filter="treeFilter" ref="tree" />
     </aside>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import Tree from 'liquor-tree'
-import { baseApiUrl } from '@/global'
-import axios from 'axios'
 
 export default {
     name: 'Menu',
@@ -32,8 +29,7 @@ export default {
     },
     methods: {
         getTreeData() {
-            const url = `${baseApiUrl}/categories/tree`
-            return axios.get(url).then(res => res.data)
+            return this.$http.get(`/categories/gettree`).then(res => res.data.data)
         },
         onNodeSelect(node) {
             this.$router.push({

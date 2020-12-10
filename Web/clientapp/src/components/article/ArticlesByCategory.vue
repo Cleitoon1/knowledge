@@ -15,8 +15,6 @@
 </template>
 
 <script>
-import { baseApiUrl } from '@/global'
-import axios from 'axios'
 import PageTitle from '../templates/PageTitle'
 import ArticleItem from './ArticleItem'
 
@@ -34,16 +32,16 @@ export default {
     },
     methods: {
         getCategory() {
-            const url = `${baseApiUrl}/categories/${this.category.id}`
-            axios(url).then(res => this.category = res.data)
+            this.$http(`/categories/get/${this.category.id}`)
+                .then(res => this.category = res.data)
         },
         getArticles() {
-            const url = `${baseApiUrl}/categories/${this.category.id}/articles?page=${this.page}`
-            axios(url).then(res => {
-                this.articles = this.articles.concat(res.data)
-                this.page++
+            this.$http(`/articles/all?categoryId=${this.category.id}&page=${this.page}&quantity=3`)
+                .then(res => {
+                    this.articles = this.articles.concat(res.data.data)
+                    this.page++
 
-                if(res.data.lenght === 0) this.loadMore = false
+                    if(res.data.lenght === 0) this.loadMore = false
             })
         }
     },

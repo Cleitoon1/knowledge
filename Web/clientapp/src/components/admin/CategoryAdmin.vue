@@ -29,8 +29,7 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { baseApiUrl, showError } from '@/global'
+import { showError } from '@/global'
 
 export default {  
   name: 'CategoryAdmin',
@@ -50,8 +49,7 @@ export default {
   },
   methods: {
     loadCategories() {
-      const url = `${baseApiUrl}/api/categories/all`
-      axios.get(url).then(res => {
+      this.$http.get(`/categories/all`).then(res => {
         this.categories = res.data.data.map(category => {
           return { ...category, value: category.id, text: category.path }
         })
@@ -63,8 +61,7 @@ export default {
       this.loadCategories();
     },
     save() {
-      const url = `${baseApiUrl}/api/${this.category.id ? `categories/update` : `categories/create`}`
-      axios.post(url, this.category)
+      this.$http.post(`/categories/${this.category.id ? `update` : `create`}`, this.category)
         .then(() => {
           this.$toasted.global.defaultSuccess()
           this.reset()
@@ -72,7 +69,7 @@ export default {
     },
     remove() {
        const id = this.category.id ? `${this.category.id}` : ''
-        axios.delete(`${baseApiUrl}/api/categories/delete/${id}`)
+        this.$http.delete(`/categories/delete/${id}`)
         .then(() => {
           this.$toasted.global.defaultSuccess()
           this.reset()
