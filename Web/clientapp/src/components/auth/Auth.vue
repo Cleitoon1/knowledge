@@ -3,19 +3,8 @@
         <div class="auth-modal">
             <img src="@/assets/logo.png" width="200" alt="Logo" />
             <hr>
-            <div class="auth-title">{{ showSignup ? 'Cadastro' : 'Login' }}</div>
-
-            <input v-if="showSignup" v-model="user.name" type="text" placeholder="Nome">
-            <input v-if="showSignup" v-model="user.lastName" type="text" placeholder="Ultimo Nome">
-            <input v-model="user.mail" name="mail" type="text" placeholder="E-mail">
-            <input v-if="showSignup" v-model="user.mobilePhone" type="text" placeholder="Celular">
-            <input v-model="user.password" name="password" type="password" placeholder="Senha">
-            <input v-if="showSignup" v-model="user.confirmPassword"
-                type="password" placeholder="Confirme a Senha">
-
-            <button v-if="showSignup" @click="signup">Registrar</button>
-            <button v-else @click="signin">Entrar</button>
-
+            <sign-up v-if="showSignup" :sendData="signup" />
+            <sign-in v-else :sendData="signin" />
             <a href @click.prevent="showSignup = !showSignup">
                 <span v-if="showSignup">Já tem cadastro? Acesse o Login!</span>
                 <span v-else>Não tem cadastro? Registre-se aqui!</span>
@@ -26,34 +15,32 @@
 
 <script>
 import { showError, userKey } from '@/global'
-
+import SignIn from './SignIn'
+import SignUp from './SignUp'
 export default {
     name: 'Auth',
+    components: { SignIn, SignUp },
     data: function() {
         return {
-            showSignup: false,
-            user: {}
+            showSignup: false        
         }
     },
     methods: {
-        signin() {
-            this.$http.post(`/auth/signin`, { mail: this.user.mail, password: this.user.password })
-                .then(res => {
-                    this.$store.commit('setUser', res.data)
-                    localStorage.setItem(userKey, JSON.stringify(res.data))
-                    this.$router.push({ path: '/' })
-                })
-                .catch(showError)
+        signin(data) {
+            this.$http.post(`/auth/signin`, { mail: data.mail, password: data.password })
+            .then(res => {
+                this.$store.commit('setUser', res.data)
+                localStorage.setItem(userKey, JSON.stringify(res.data))
+                this.$router.push({ path: '/' })
+            }).catch(showError)
         },
-        signup() {
-            this.$http.post(`/auth/signup`, this.user)
-                .then(() => {
-                    this.$toasted.global.defaultSuccess()
-                    this.user = {}
-                    this.showSignup = false
-                })
-                .catch(showError)
-        }
+        signup(data) {
+            this.$http.post(`/auth/signup`, data)
+            .then(() => {
+                this.$toasted.global.defaultSuccess()
+                this.showSignup = false
+            }).catch(showError)
+        },
     }
 }
 </script>
@@ -84,10 +71,21 @@ export default {
         margin-bottom: 15px;
     }
 
+    .auth-modal .form-group {
+        width: 100%;
+        margin: 0px 0px 15px 0px;
+        padding: 0;
+    }
+
+    .auth-modal .form-summary {
+        width: 100%;
+        margin: 0px 0px 15px 0px;
+        padding: 0;
+    }
+
     .auth-modal input {
         border: 1px solid #BBB;
         width: 100%;
-        margin-bottom: 15px;
         padding: 3px 8px;
         outline: none;
     }

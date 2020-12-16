@@ -19,9 +19,8 @@ import PageTitle from '../templates/PageTitle'
 import ArticleItem from './ArticleItem'
 
 export default {
-  components: { ArticleItem },
     name: 'ArticlesByCategory',
-    component: { PageTitle, ArticleItem },
+    components: { PageTitle, ArticleItem },
     data: function () {
         return {
             category: {},
@@ -40,7 +39,6 @@ export default {
                 .then(res => {
                     this.articles = this.articles.concat(res.data.data)
                     this.page++
-
                     if(res.data.lenght === 0) this.loadMore = false
             })
         }

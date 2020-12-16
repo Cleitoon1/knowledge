@@ -4,45 +4,45 @@
       <input id="user-id" type="hidden" v-model="user.id">
       <b-row>
         <b-col md="6" sm="12">
-          <b-form-group label="Nome:" label-for="user-name">
+          <form-group :validator="$v.user.name" label="Nome" label-for="user-name">
             <b-form-input id="user-name" type="text" v-model="user.name" required 
               placeholder="Informe o Nome" :readonly="mode === 'remove'" />
-          </b-form-group>
+          </form-group>
         </b-col>
         <b-col md="6" sm="12">
-          <b-form-group label="Ultimo Nome:" label-for="user-lastName">
+          <form-group :validator="$v.user.lastName" label="Ultimo Nome" label-for="user-lastName">
             <b-form-input id="user-lastName" type="text" v-model="user.lastName" required 
               placeholder="Informe o Ultimo Nome" :readonly="mode === 'remove'" />
-          </b-form-group>
+          </form-group>
         </b-col>
       </b-row>
       <b-row>
         <b-col md="6" sm="12">
-          <b-form-group label="E-mail:" label-for="user-mail">
+          <form-group :validator="$v.user.mail" label="E-mail" label-for="user-mail">
             <b-form-input id="user-mail" type="text" v-model="user.mail" required 
               placeholder="Informe o E-mail" :readonly="mode === 'remove'" />
-          </b-form-group>
+          </form-group>
         </b-col>
         <b-col md="6" sm="12">
-          <b-form-group label="Perfil:" label-for="user-profileId">
+          <form-group :validator="$v.user.profileId" label="Perfil" label-for="user-profileId">
             <b-form-select v-if="mode === 'save'" v-model="user.profileId" :options="profiles" />
             <b-form-input v-else id="user-profileId" type="text" v-model="user.profileName" readonly />
-          </b-form-group>
+          </form-group>
         </b-col>
       </b-row>
     
       <b-row v-show="mode === 'save'">
         <b-col md="6" sm="12">
-          <b-form-group label="Senha:" label-for="user-password">
+          <form-group :validator="$v.user.password" label="Senha:" label-for="user-password">
             <b-form-input id="user-password" type="password" v-model="user.password" required 
               placeholder="Informe a Senha" :readonly="mode === 'remove'" />
-          </b-form-group>
+          </form-group>
         </b-col>
         <b-col md="6" sm="12">
-          <b-form-group label="Confirmação de senha:" label-for="user-confirm-password">
+          <form-group :validator="$v.user.confirmPassword" label="Confirmação de senha:" label-for="user-confirm-password">
             <b-form-input id="user-confirm-password" type="password" v-model="user.confirmPassword" required 
               placeholder="Confirme a Seha" :readonly="mode === 'remove'" />
-          </b-form-group>
+          </form-group>
         </b-col>
       </b-row>
       <b-row>
@@ -55,7 +55,7 @@
     </b-form>
     <hr>
       <b-table hover striped :items="users" :fields="fields">
-        <template slot="actions" slot-scope="data">
+        <template slot="cell(actions)" slot-scope="data">
           <b-button variant="warning" @click="loadUser(data.item)" class="mr-2">
             <i class="fa fa-pencil"></i>
           </b-button>
@@ -69,6 +69,7 @@
 
 <script>
 import { showError } from '@/global'
+import { required, minLength, email, numeric, sameAs } from "vuelidate/lib/validators";
 
 export default {  
   name: 'UserAdmin',
@@ -89,6 +90,17 @@ export default {
         ]
       }
   },
+  validations: {
+    user: {
+      name: { required },
+      lastName: { required },
+      mail: { required, email },
+      profileId: { required },
+      mobilePhone: { numeric },
+      password: { required, minLength: minLength(6) },
+      confirmPassword: { required, sameAsPassword : sameAs('password') }
+    }
+  },
   methods: {
     async loadProfiles() {
       await this.$http.get(`/profiles/all`).then(res => {
@@ -108,14 +120,18 @@ export default {
     reset() {
       this.mode = 'save'
       this.user = {}
+      this.$v.$reset();
       this.loadUsers();
     },
     save() {
-      this.$http.post(`/users/${this.user.id ? `update` : `create`}`, this.user)
-        .then(() => {
-          this.$toasted.global.defaultSuccess()
-          this.reset()
-        }).catch(showError)
+      this.$v.$touch()
+      if (!this.$v.$invalid) { 
+        this.$http.post(`/users/${this.user.id ? `update` : `create`}`, this.user)
+          .then(() => {
+            this.$toasted.global.defaultSuccess()
+            this.reset()
+          }).catch(showError)
+      }
     },
     remove() {
        const id = this.user.id ? `${this.user.id}` : ''

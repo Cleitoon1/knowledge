@@ -57,7 +57,6 @@ export default {
   created() {
      this.validateToken();
   }
-
 }
 </script>
 <style>
@@ -90,4 +89,3 @@ export default {
 			"footer footer";
 	}
 </style>
-
