@@ -10,7 +10,7 @@ dotnet restore
 
 Generate the database
 ```bash
-cd [project_folder]\Web
+cd [project_folder]\Data
 dotnet ef database update -v -s ../Web
 ```
 

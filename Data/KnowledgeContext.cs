@@ -6,23 +6,17 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain.DTOs;
 
 namespace Data
 {
     public class KnowledgeContext : DbContext
     {
-        // private readonly IHttpContextAccessor _httpContextAccessor;
-
-        // public KnowledgeContext(DbContextOptions<KnowledgeContext> options, 
-        //     IHttpContextAccessor httpContextAccessor)
-        // : base(options)
-        // {
-        //     _httpContextAccessor = httpContextAccessor;
-        // }
-
-        public KnowledgeContext(DbContextOptions<KnowledgeContext> options)
+        private readonly LoggedUserDTO _loggedUserData;
+        public KnowledgeContext(DbContextOptions<KnowledgeContext> options, LoggedUserDTO loggedUserData)
         : base(options)
         {
+            _loggedUserData = loggedUserData;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -66,7 +60,8 @@ namespace Data
                                 break;
 
                             case EntityState.Added:
-                            trackable.SetCreatedBy(user);
+                                trackable.SetCreatedBy(user);
+                                trackable.SetModifiedBy(user);
                                 break;
                         }
                     }
@@ -77,15 +72,8 @@ namespace Data
         private long? GetCurrentUser()
         {
             long? id = (long?)null;            
-            // if(this._httpContextAccessor != null && this._httpContextAccessor.HttpContext)
-            // {
-            //     HttpContext httpContext = this._httpContextAccessor.HttpContext;
-            //     if(httpContext.User != null)
-            //     {
-            //         Claim claim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-            //         id = claim != null ? long.Parse(claim.Value) : (long?)null;
-            //     }
-            // }            
+            if(_loggedUserData != null && _loggedUserData.Id > 0)
+                id = _loggedUserData.Id;         
             return id; 
         }
     }
