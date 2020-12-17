@@ -1,6 +1,7 @@
 <template>
     <div class="article-by-id">
-        <page-title icon="fa fa-file-o" :main="article.name" :sub="article.description" />
+        <page-title icon="fa fa-file-o" :main="article.title" :sub="article.description"
+            :obs="article.user.fullName" />
         <div class="article-content" v-html="article.content"></div>
     </div>
 </template>
@@ -18,8 +19,8 @@ export default {
         }
     },
     mounted() {
-        this.$http(`/articles/all?categoryId=${this.$route.params.id ? this.$route.params.id : ''}`)
-            .then(res => this.article = res.data.data)
+        this.$http(`/articles/get/${this.$route.params.id ? this.$route.params.id : ''}`)
+            .then(res => this.article = { ...res.data.data, content: window.atob(res.data.data.content) })
     },
     updated() {
         document.querySelectorAll('.article-content pre.ql-syntax').forEach(e => {

@@ -2,9 +2,9 @@
   <div class="article-admin">
     <b-form>
       <input id="article-id" type="hidden" v-model="article.id">
-      <form-group :validator="$v.article.name" label="Nome" label-for="article-name">
-        <b-form-input id="article-name" type="text" v-model="article.name" required 
-          placeholder="Informe o Nome" :readonly="mode === 'remove'" />
+      <form-group :validator="$v.article.title" label="Título" label-for="article-title">
+        <b-form-input id="article-title" type="text" v-model="article.title" required 
+          placeholder="Informe o Título" :readonly="mode === 'remove'" />
       </form-group>
       <form-group :validator="$v.article.description" label="Descrição" label-for="article-description">
         <b-form-input id="article-description" type="text" v-model="article.description" required 
@@ -30,10 +30,10 @@
     <hr>
       <b-table hover striped :items="articles" :fields="fields">
         <template slot="cell(actions)" slot-scope="data">
-          <b-button variant="warning" @click="loadarticle(data.item)" class="mr-2">
+          <b-button variant="warning" @click="loadArticle(data.item)" class="mr-2">
             <i class="fa fa-pencil"></i>
           </b-button>
-          <b-button variant="danger" @click="loadarticle(data.item, 'remove')" class="mr-2">
+          <b-button variant="danger" @click="loadArticle(data.item, 'remove')" class="mr-2">
             <i class="fa fa-trash"></i>
           </b-button>
         </template>
@@ -65,7 +65,7 @@ export default {
         articles: [],
         fields: [
           {key: 'id', label: 'Código', sortable: true},
-          {key: 'name', label: 'Nome', sortable: true},
+          {key: 'title', label: 'Título', sortable: true},
           {key: 'description', label: 'Descrição', sortable: true},
           {key: 'actions', label: 'Ações'}
         ]
@@ -73,7 +73,7 @@ export default {
   },
   validations: {
     article: {
-      name: { required, minLength: minLength(10) },
+      title: { required, minLength: minLength(10) },
       description: { required, maxLength: maxLength(1000) },
       categoryId: { required },
       userId: { required },
@@ -97,7 +97,8 @@ export default {
     save() {
       this.$v.$touch()
       if (!this.$v.$invalid) { 
-        this.$http.post(`/articles/${this.article.id ? `update` : `create`}`, this.article)
+        const article = { ...this.article, content: window.btoa(this.article.content) }
+        this.$http.post(`/articles/${this.article.id ? `update` : `create`}`, article)
           .then(() => {
             this.$toasted.global.defaultSuccess()
             this.reset()
@@ -115,7 +116,7 @@ export default {
     loadArticle(article, mode = 'save'){
       this.mode = mode
       this.$http.get(`/articles/get/${article.id}`)
-        .then(res => this.article = res.data.data)
+        .then(res => this.article = { ...res.data.data, content: window.atob(res.data.data.content) })
     },
     loadCategories() {
       this.$http.get(`/categories/all`).then(res => {

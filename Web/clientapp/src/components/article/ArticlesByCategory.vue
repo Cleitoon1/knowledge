@@ -1,5 +1,5 @@
 <template>
-  <div class="arcitles-by-category">
+  <div class="articles-by-category">
       <page-title icon="fa fa-folder-o" :main="category.name" sub="Categoria" />
       <ul>
           <li v-for="article in articles" :key="article.id">
@@ -64,6 +64,7 @@ export default {
 <style>
     .articles-by-category ul {
         list-style-type: none;
+        list-style: none;
         padding: 0px;
     }
 

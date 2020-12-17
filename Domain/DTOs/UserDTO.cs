@@ -4,7 +4,7 @@ namespace Domain.DTOs
 {
     public class UserDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
         public string Name { get; set; }

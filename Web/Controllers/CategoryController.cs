@@ -63,7 +63,7 @@ namespace Web.Controllers
 
         [Authorize("Administrator")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(long id)
         {
             return HandleResponse(await _mediator.Send(new RemoveCategoryRequest(id)));
         }

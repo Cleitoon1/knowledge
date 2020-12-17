@@ -35,9 +35,9 @@ namespace Web.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get(GetArticleByIdRequest data)
+        public async Task<IActionResult> Get(long id)
         {
-            return HandleResponse(await _mediator.Send(data));
+            return HandleResponse(await _mediator.Send(new GetArticleByIdRequest(id)));
         }
 
         [HttpPost]

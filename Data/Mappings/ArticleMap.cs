@@ -15,6 +15,7 @@ namespace Data.Mappings
             builder.Property(x => x.ImageUrl).HasMaxLength(300);
             builder.Property(x => x.Content).IsRequired();
             builder.HasOne(x => x.Category).WithMany(x => x.Articles).HasForeignKey(x => x.CategoryId).IsRequired();
+            builder.HasOne(x => x.User).WithMany(x => x.Articles).HasForeignKey(x => x.UserId).IsRequired();
         }
     }
 }

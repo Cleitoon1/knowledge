@@ -23,7 +23,8 @@ namespace Domain.Commands.Articles.AddArticle
                 AddNotification("Request", "The request data cannot be null");
                 return new Response(this);
             }
-            Article article = new Article(request.Title, request.Description, request.Content, request.CategoryId);
+            Article article = new Article(request.Title, request.Description, request.ImageUrl,
+                request.Content, request.CategoryId, request.UserId);
             AddNotifications(article);
 
             if (Invalid)

@@ -7,9 +7,9 @@ namespace Domain.Commands.Articles.GetArticleById
 {
     public class GetArticleByIdRequest : IRequest<Response>
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
-        public GetArticleByIdRequest(int id)
+        public GetArticleByIdRequest(long id)
         {
             Id = id;
         }

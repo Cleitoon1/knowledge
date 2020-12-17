@@ -3,6 +3,7 @@ using Domain.Interfaces.Repositories;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Data.Repositories
 {
@@ -13,8 +14,6 @@ namespace Data.Repositories
         }
 
         public IEnumerable<Article> GetByCategory(long categoryId)
-        {
-            throw new NotImplementedException();
-        }
+            => _context.Set<Article>().Where(x => x.CategoryId == categoryId).ToList();
     }
 }

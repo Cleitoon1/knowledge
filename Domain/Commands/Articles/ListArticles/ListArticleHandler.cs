@@ -2,8 +2,10 @@
 using Domain.Models;
 using Flunt.Notifications;
 using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,7 +29,8 @@ namespace Domain.Commands.Articles.ListArticles
             }
 
             IEnumerable<Article> data = (request.CategoryId.HasValue ?
-                _articleRep.GetAll(x => x.CategoryId == request.CategoryId.Value, tracking: false) :_articleRep.GetAll()).ToList();
+                _articleRep.GetAllBy(x => x.CategoryId == request.CategoryId.Value, tracking: false, 
+                  x => x.User) :_articleRep.GetAll()).ToList();
             if(request.Page.HasValue && request.Quantity.HasValue)
                 data = data.Skip(request.Page.Value * request.Quantity.Value - request.Quantity.Value)
                     .Take(request.Quantity.Value).ToList();

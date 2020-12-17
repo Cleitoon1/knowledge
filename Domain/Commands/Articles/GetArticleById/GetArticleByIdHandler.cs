@@ -24,16 +24,13 @@ namespace Domain.Commands.Articles.GetArticleById
                 return new Response(this);
             }
 
-            Article article = _articleRep.GetById(request.Id);
+            Article article = _articleRep.GetById(request.Id, false, x => x.User);
             if (article == null)
             {
                 AddNotification("Article", "There is no article with this Id");
                 return new Response(this);
             }
-            _articleRep.Delete(request.Id);
-            return await Task.FromResult(new Response(this, 
-                new { article.Id, article.Title, article.Description, article.ImageUrl, article.Content,
-                    article.CategoryId, article.CreatedDate, article.ModifiedBy }));
+            return await Task.FromResult(new Response(this, article));
         }
     }
 }
